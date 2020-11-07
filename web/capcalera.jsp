@@ -70,19 +70,46 @@
         </style>
     </head>
     <body>
+
+        <%
+            // Si es una página de la intranet y no permiso redirecciona al inicio
+            String s = request.getRequestURI(); // Devuelve URL de consulta
+            String servletlloc = request.getContextPath();  // Devuelve URL base (localhost:8080)
+            if ((s.startsWith(servletlloc + "/privat/") // Si se intenta acceder a una página privada
+                    && (!(s.contains("/entradapas.jsp"))))) {
+                System.out.println("DEBUG - Intentando acceder a página privada");
+                String user = (String) session.getAttribute("user");    // Coje user y pass para comprobar
+                String pass = (String) session.getAttribute("pass");    // Son objetos de sesión
+                System.out.println("DEBUG - Entrado con user " + user + " y password " + pass);
+
+                if ((user == null) || (pass == null)) {     // Si no están definidos
+                    out.println(s + "    " + servletlloc);
+                    response.setStatus(response.SC_MOVED_TEMPORARILY);
+                    response.setHeader("Location", request.getContextPath() + "/index.jsp");    // Redirecciona a home
+                } else {
+                    String level = (String) session.getAttribute("level");
+                    if (Integer.parseInt(level) > 1) {       // Redirecciona a home también si el nivel es > que 1
+                        response.setStatus(response.SC_MOVED_TEMPORARILY);
+                        response.setHeader("Location", request.getContextPath() + "/index.jsp");
+                    }
+                }
+            }
+        %>
+
+
         <div class="header">
-            <a href="<%= request.getContextPath() %>" class="logo">
-                <img alt="Company Logo" src="<%= request.getContextPath() %>/imatges/logo.jpeg" width="100%" height="30%">
+            <a href="<%= request.getContextPath()%>" class="logo">
+                <img alt="Company Logo" src="<%= request.getContextPath()%>/imatges/logo.jpeg" width="100%" height="30%">
             </a>
             <div class="header-right">
-                <a class="active" href="<%= request.getContextPath() %>">Home</a>
-                <a href="<%= request.getContextPath() %>/contact.jsp">Contact</a>
-                <a href="<%= request.getContextPath() %>/about.jsp">About</a>
+                <a class="active" href="<%= request.getContextPath()%>">Home</a>
+                <a href="<%= request.getContextPath()%>/contact.jsp">Contact</a>
+                <a href="<%= request.getContextPath()%>/about.jsp">About</a>
             </div>
         </div>
 
         <div style="padding-left:20px">
-            <h1>Date: <%= (new Date()).toString() %> <br> </h1>
+            <h1>Date: <%= (new Date()).toString()%> <br> </h1>
             <hr>
         </div>
     </body>
