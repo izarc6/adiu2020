@@ -168,6 +168,11 @@ public class bdpeliculas extends HttpServlet {
                 res = dbanb.getEdadActorInt(par);
                 break;
             }
+            case "actoresrandom": {
+                DBActionsNameBasics dbanb = new DBActionsNameBasics();
+                res = dbanb.getActoresRandom(par);
+                break;
+            }
             default:
                 break;
         }

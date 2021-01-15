@@ -22,8 +22,8 @@
         <script src="js/export-data.js"></script>
 
         <!-- Imports personalizados -->
-        <script src="js/barchart.js" type="text/javascript"></script>
         <script src="js/piechart.js" type="text/javascript"></script>
+        <script src="js/barchart.js" type="text/javascript"></script>
         <script src="js/worldMap.js" type="text/javascript"></script>
     </head>
     <body>

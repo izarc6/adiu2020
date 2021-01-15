@@ -99,6 +99,10 @@ public class DBActionsNameBasics {
         } finally {
             con.close();
         }
+        
+        System.out.println("DEBUG - Cogiendo edad para el actor " + par);
+        System.out.println("\tEdad: " + res);
+        
         return res;
     }
 
@@ -158,6 +162,32 @@ public class DBActionsNameBasics {
             }
 
             res = res + canti + "}";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            con.close();
+        }
+        return res;
+    }
+
+    public String getActoresRandom(String par) {
+        DBConnection con = new DBConnection();
+        String res = "{";
+        try {
+            con.open();
+            Statement st = con.getConection().createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM namebasics WHERE namebasics.birthyear != -1 ORDER BY RAND() LIMIT " + par + ";");
+            String aux;
+            int contador = 0;
+            while (rs.next()) {
+                String nombreActor = rs.getString("primaryname");
+                aux = "";
+                aux = aux + "\"nombre" + contador + "\":\"" + nombreActor + "\"";
+                res = res + aux + ", ";
+                contador++;
+            }
+            res = res.substring(0, res.length() - 2);   // quito la última coma y el espacio
+            res = res + "}";
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

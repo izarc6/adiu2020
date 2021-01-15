@@ -1,5 +1,6 @@
 var acumBar;
 var espana, argentina;
+var actores;
 var p2_bar;
 var p3_bar;
 
@@ -7,12 +8,52 @@ $(document).ready(function () {
     acumBar = 0;
     espana = 0;
     pintarEsperaBar();
-    pintarEspana();
-    pintarArgentina();
+    //pintarEspana();
+    //pintarArgentina();
+    pintarActores();
 });
 
 function pintarEsperaBar() {
     $('#esperaBar').append('<img src="imatges/gif/loading.gif"/>');
+}
+
+function pintarActores() {
+    result = sessionStorage.getItem("actoresRandom");
+    if (result === null) {
+        // Mediante las directivas del fichero bdpeliculas podemos conseguir los datos de la BD
+        $.ajax({url: "http://localhost:8080/PeliculesWeb20/bdpeliculas?op=actoresrandom&par=6",
+            success: function (result) { // Cuando la funcion sale bien nos devuelve result
+                // Lo almacenamos en la sesion
+                sessionStorage.setItem("actoresRandom", result);
+                
+                // Guardamos el valor de result en una variable global
+                console.log("Result actores random: " + result);
+                actores = JSON.parse(result);
+
+                // Sumamos uno a aCUM para saber si las seis lecturas han acabado
+                acumBar++;
+                
+                cogerActor1();
+                cogerActor2();
+                cogerActor3();
+                cogerActor4();
+                cogerActor5();
+                cogerActor6();
+                
+                pintarGraficaBar();
+            }});
+    } else {
+        console.log("DEBUG - barchart - Actores ya presentes en caché!");
+        
+        // Hay que volver a hacer el parse porque si no los parámetros "nombre0", "nombre1" etc son
+        // strings, no identificadores, y entonces las columnas del barchart no tienen etiquetas
+        actores = JSON.parse(result);
+        acumBar++;
+        // Se llama a cogerActor6 para que se pueda pintar el piechart
+        cogerActor6();
+        pintarGraficaPie();
+        pintarGraficaBar();
+    }
 }
 
 function pintarEspana() {
@@ -72,7 +113,7 @@ function pintarArgentina() {
 }
 
 function pintarGraficaBar() {
-    if (acumBar === 2) {
+    if (acumBar === 1) {
         $('#esperaBar').empty();
         column();
     }
@@ -89,12 +130,12 @@ function column() {
         },
         xAxis: {
             categories: [
-                espana.nombre0,
-                espana.nombre1,
-                espana.nombre2,
-                argentina.nombre0,
-                argentina.nombre1,
-                argentina.nombre2
+                actores.nombre0,
+                actores.nombre1,
+                actores.nombre2,
+                actores.nombre3,
+                actores.nombre4,
+                actores.nombre5
             ],
             crosshair: true
         },
@@ -120,7 +161,7 @@ function column() {
         },
         series: [{
                 name: 'Películas',
-                data: [50, 69, 106, 129, 144, 176]
+                data: [1,2,3,4,5,6]
             }]
     });
 }
